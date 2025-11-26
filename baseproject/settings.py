@@ -11,9 +11,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "Main", 
-    BASE_DIR / "Menu",
+    BASE_DIR / "static/Main",    # Correct path
+    BASE_DIR / "static/Menu",    # Correct path
 ]
+
+# For production static files
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
