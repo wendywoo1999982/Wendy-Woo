@@ -38,6 +38,30 @@ ALLOWED_HOSTS = [
     '.onrender.com'  # This allows all Render subdomains
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://wendy-woo.onrender.com',
+    'https://*.onrender.com',
+]
+
+# If you have CORS issues, also add:
+CORS_ALLOW_ALL_ORIGINS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Add this with your other settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://wendy-woo.onrender.com',
+    'https://*.onrender.com',
+]
+
+# Also make sure you have these
+CORS_ALLOWED_ORIGINS = [
+    'https://wendy-woo.onrender.com',
+    'https://*.onrender.com',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Temporary for testing
+
 
 # Application definition
 
