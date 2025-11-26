@@ -5,7 +5,7 @@ from . import views  # Import all views
 urlpatterns = [
     path('', views.main_page, name='main'),
     path('menu/', views.menu_page, name='menu'),
-    # path('shopnow/', views.shopnow, name='shopnow'),  # Temporarily disabled
+    path('shopnow/', views.shopnow, name='shopnow'),  # Temporarily disabled
     path('login/', views.SignInView.as_view(), name='login'),
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('logout/', views.custom_logout, name='logout'),
