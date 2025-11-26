@@ -1,0 +1,42 @@
+<!-- templates/menu.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Menu - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'Menu/menu.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="menu-cover">
+  <img src="{% static 'Menu/menu.jpg' %}" alt="Menu Cover Image" class="menu-cover-bg">
+  <div class="menu-cover-content">
+    <h1>MENU</h1>
+  </div>
+</div>
+
+<div class="scroll-indicator">
+  <div class="mouse">
+    <div class="wheel"></div>
+  </div>
+</div>
+
+<main class="menu-section">
+  <h1>Our Menu</h1>
+  <p>Explore our delicious offerings below:</p>
+
+  <div class="menu-grid">
+    <div class="menu-item">
+      <img src="{% static 'Menu/images/bucket.png' %}" alt="Bucket Combo">
+      <h2>5-pc Bucket Combo</h2>
+      <p>RM74.49</p>
+    </div>
+    <div class="menu-item">
+      <img src="{% static 'Menu/images/cheezilla.png' %}" alt="Cheezilla">
+      <h2>K-Cheese Cheezilla</h2>
+      <p>RM25.49</p>
+    </div>
+  </div>
+</main>
+{% endblock %}

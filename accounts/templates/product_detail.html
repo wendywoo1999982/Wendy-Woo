@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'product_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <!-- Back to Shop Link -->
+    <a href="{% url 'shopnow' %}" class="back-link">← Back to Products</a>
+    
+    <!-- Product Info Section -->
+    <div class="product-main">
+        <div class="product-image">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        </div>
+        
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+            
+            <!-- Rating Summary -->
+            <div class="rating-summary">
+                <div class="average-rating">
+                    <div class="stars">
+                        {% with avg_rating=product.average_rating %}
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= avg_rating %}
+                                ⭐
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <span class="rating-number">{{ product.average_rating|floatformat:1 }}</span>
+                    <span class="review-count">({{ product.review_count }} reviews)</span>
+                </div>
+            </div>
+            
+            <p class="product-description">{{ product.description }}</p>
+            <p class="product-price">¥{{ product.price }}</p>
+            
+            <button class="add-to-cart-btn">Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+        <h2>Customer Reviews</h2>
+        
+        <!-- Add Review Form (for logged-in users) -->
+        {% if user.is_authenticated %}
+        <div class="add-review-form">
+            <h3>Write a Review</h3>
+            <form method="POST" action="{% url 'add_review' product.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>Your Rating:</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5">
+                        <label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Your Review:</label>
+                    <textarea name="comment" rows="4" placeholder="Share your experience with this product..." class="form-textarea"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Photo (optional):</label>
+                    <input type="file" name="photo" accept="image/*" class="file-input">
+                </div>
+                
+                <button type="submit" class="submit-review-btn">Submit Review</button>
+            </form>
+        </div>
+        {% else %}
+        <p class="login-prompt"><a href="{% url 'login' %}">Sign in</a> to write a review.</p>
+        {% endif %}
+        
+        <!-- Reviews List -->
+        <div class="reviews-list">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <strong>{{ review.user.first_name }} {{ review.user.last_name }}</strong>
+                        <div class="review-stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}⭐{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span class="review-date">{{ review.created_at|date:"M j, Y" }}</span>
+                </div>
+                
+                <p class="review-comment">{{ review.comment }}</p>
+                
+                {% if review.photo %}
+                <div class="review-photo">
+                    <img src="{{ review.photo.url }}" alt="Review photo">
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p class="no-reviews">No reviews yet. Be the first to review!</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

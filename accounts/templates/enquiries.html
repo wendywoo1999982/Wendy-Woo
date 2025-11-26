@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'enquiries.css' %}">
+<style>
+/* Full page background */
+body {
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.4), 
+        rgba(255, 255, 255, 0.4)
+    ), url('{% static "images/enquiries.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure main content doesn't have background */
+main {
+    background: transparent !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="enquiry-container">
+    <h1 class="enquiry-title">Contact Us</h1>
+    
+    <form method="post" class="enquiry-form" enctype="multipart/form-data">  <!-- Add enctype -->
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Inquiry Type *</label>
+            {{ form.inquiry_type }}
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Name *</label>
+            {{ form.name }}
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Email *</label>
+            {{ form.email }}
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">How can we help you? *</label>
+            {{ form.message }}
+        </div>
+        
+        <!-- ADD PHOTO UPLOAD FIELD -->
+        <div class="form-group">
+            <label class="form-label">Attach Photo (Optional)</label>
+            <div class="file-upload-wrapper">
+                {{ form.photo }}
+                <div class="file-upload-info">
+                    <i class="fas fa-camera"></i>
+                    <span>Click to upload a photo</span>
+                </div>
+            </div>
+            <small class="file-help">Supported formats: JPG, PNG, GIF. Max size: 5MB</small>
+        </div>
+        
+        <button type="submit" class="submit-btn">Send Enquiry</button>
+    </form>
+</div>
+{% endblock %}

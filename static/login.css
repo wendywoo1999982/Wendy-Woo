@@ -1,0 +1,201 @@
+/* ===== LOGIN PAGE LAYOUT ===== */
+
+/* Adjust login container to account for header and footer */
+.login-container {
+    min-height: calc(100vh - 180px); /* Subtract header and footer height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #878672;
+    margin: 0;
+    padding: 10px;
+    width: 100%;
+}
+
+/* Make sure body background matches */
+body {
+    background-color: #878672 !important;
+}
+
+main {
+    background-color: #878672 !important;
+    min-height: calc(100vh - 180px); /* Match login container */
+}
+
+/* ===== LOGIN FORM STYLES ===== */
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 24px;
+}
+
+.login-container form p {
+    margin-bottom: 20px;
+}
+
+.login-container form input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.login-container form input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+.login-container button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.login-container button[type="submit"]:hover {
+    background: #333;
+}
+
+/* ===== PASSWORD TOGGLE STYLES - UNIFIED DESIGN ===== */
+
+.password-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+    height: 48px; /* ← Add this to control total height */
+}
+
+.password-wrapper:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+.password-input-container {
+    flex: 1;
+}
+
+#id_password {
+    width: 100%;
+    padding: 6x;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
+.toggle-password {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    font-size: 16px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    border-left: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+}
+
+.toggle-password:hover {
+    color: #000;
+    background: #f8f9fa;
+}
+
+/* Remove the border when focused */
+.password-wrapper:focus-within .toggle-password {
+    border-left-color: #007bff;
+}
+
+/* ===== LOGIN LINKS ===== */
+
+.login-links {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.login-links p {
+    margin: 15px 0;
+}
+
+.login-container a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+
+/* ===== MESSAGE STYLES ===== */
+
+.messages {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* ===== FORM GROUP STYLES ===== */
+
+.form-group {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}

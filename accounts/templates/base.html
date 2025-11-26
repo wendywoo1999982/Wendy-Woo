@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}WENDY WOO{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'base.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  {% block extra_css %}{% endblock %} 
+</head>
+<body>
+  <!-- HEADER SECTION -->
+  <div class="hero-header">
+    <div class="hero-left">
+      <div class="hamburger-container" id="hamburger">
+        <a href="javascript:void(0);" class="home" id="hamburgerToggle">&#9776;</a>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <span class="close-btn" id="dropdownClose">✖</span>
+          <a href="{% url 'menu' %}">Menu</a>
+          <a href="#location">Location</a>
+          <a href="{% url 'enquiries' %}">Enquiry</a>
+        </div>
+      </div>
+      <a href="{% url 'shopnow' %}" class="shownow">SHOP NOW</a>
+    </div>
+
+    <div class="hero-logo-group">
+      <a href="{% url 'main' %}" class="logo-link">
+        <img src="{% static 'Main/others/favicon-32x32.png' %}" alt="WENDY WOO Logo" class="hero-logo">
+        <span class="hero-title">WENDY WOO</span>
+      </a>
+    </div>
+
+    <div class="hero-right">
+      <!-- SEARCH CONTAINER -->
+      <div class="search-container">
+        <div class="search-toggle-btn" id="searchToggle">
+          <i class="fas fa-search search-icon"></i>
+          <i class="fas fa-times close-icon"></i>
+        </div>
+        <div class="search-box" id="searchBox">
+          <div class="search-form">
+            <input type="text" placeholder="Search Product Here..." class="search-input" id="searchInput">
+            <button type="submit" class="search-submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <div class="search-results" id="searchResults">
+            <!-- Results will be dynamically inserted here -->
+          </div>
+        </div>
+      </div>
+      <!-- END SEARCH CONTAINER -->
+
+      <!-- CART ICON -->
+      <a href="#" class="cart-icon" id="cart-toggle">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count">
+          {% if cart_items_count %}{{ cart_items_count }}{% else %}0{% endif %}
+        </span>
+      </a>
+      
+      {% if user.is_authenticated %}
+        <!-- User Profile Dropdown -->
+        <div class="profile-dropdown">
+          <a href="javascript:void(0);" class="profile-toggle">
+            <i class="fas fa-user"></i> MY PROFILE <i class="fas fa-chevron-down"></i>
+          </a>
+          <div class="dropdown-content">
+            <a href="{% url 'profile' %}"><i class="fas fa-user-edit"></i> Profile</a>
+            <a href="#"><i class="fas fa-shopping-bag"></i> Purchased Orders</a>
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="{% url 'logout' %}" class="logout-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+          </div>
+        </div>
+      {% else %}
+        <a href="{% url 'login' %}" class="login">LOGIN</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CART POPUP -->
+  <div id="cart-popup">
+    <div class="cart-header">
+      <h3>Shopping Cart ({{ cart_items_count|default:0 }})</h3>
+      <span class="close-cart">&times;</span>
+    </div>
+    
+    <div class="cart-content">
+      {% if cart_items %}
+        <div class="cart-items">
+          {% for item in cart_items %}
+          <div class="cart-item">
+            <div class="item-info">
+              <h4>{{ item.product.name }}</h4>
+              <p class="item-quantity">{{ item.quantity }} x ¥{{ item.product.price }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>{{ cart_items_count }} item{% if cart_items_count != 1 %}s{% endif %}</span>
+            <span>¥{{ cart_total|default:0 }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span>Free</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total (tax incl.)</span>
+            <span>¥{{ cart_total|default:0 }}</span>
+          </div>
+        </div>
+        
+        <div class="cart-buttons">
+          <button class="view-cart">VIEW CART</button>
+          <button class="checkout-btn">CHECKOUT</button>
+        </div>
+      {% else %}
+        <div class="empty-cart">
+          <p>No items in cart</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT BLOCK -->
+  <main>
+    {% block content %}
+    <!-- This area gets replaced by child templates -->
+    {% endblock %}
+  </main>
+
+  <!-- FOOTER SECTION -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>USEFUL LINKS</h3>
+        <ul>
+          <li><a href="#">Ask Nestlé</a></li>
+          <li><a href="#">Contact us</a></li>
+          <li><a href="#">Find us</a></li>
+          <li><a href="#">Exports</a></li>
+          <li><a href="#">Search for jobs</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>DOWNLOADS</h3>
+        <ul>
+          <li><a href="#">Annual Review</a></li>
+          <li><a href="#">Corporate Governance & Financial Report</a></li>
+          <li><a href="#">Nestlé in Society Report</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>INVESTORS</h3>
+        <ul>
+          <li><a href="#">Annual Report</a></li>
+          <li><a href="#">Shareholders' Meeting</a></li>
+          <li><a href="#">Announcements</a></li>
+          <li><a href="#">5 Years' Statistics</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>SHARE INFORMATION</h3>
+        <ul>
+          <li><a href="#">Share Price</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script src="{% static 'script.js' %}"></script>
+  
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

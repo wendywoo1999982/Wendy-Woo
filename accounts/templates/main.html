@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}WENDY WOO - Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'Main/main.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Main Content Wrapper -->
+<div class="main-wrapper">
+  <!-- 🌄 Video Hero Section -->
+  <section class="video-hero" id="home">
+    <video autoplay muted loop playsinline class="background-video">
+      <source src="{% static 'Main/others/video.mp4' %}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- 🍂 Scroll Indicator -->
+    <div class="scroll-indicator">
+      <div class="mouse">
+        <div class="wheel"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🌿 Introduction Section -->
+  <section class="content-section intro-section" id="introduction">
+    <div class="intro-box">
+      <div class="intro-text">
+        <h1>Welcome to WENDY WOO</h1>
+        <p>
+          Discover the finest quality eggs and dairy products. Our commitment to excellence 
+          ensures that every product meets the highest standards of freshness and nutrition. 
+          From farm to table, we deliver quality you can trust.
+        </p>
+        <a href="{% url 'menu' %}" class="info-button">Explore Our Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🌼 Products Section -->
+  <section class="content-section products-section" id="products">
+    <div class="destination-box">
+      <div class="destination-text">
+        <h2>Our Products</h2>
+        <p>Discover our range of premium eggs and dairy products crafted with care and quality.</p>
+      </div>
+
+      <div class="slider-container">
+        <button class="slider-arrow left" onclick="scrollSlider(-1)">←</button>
+
+        <div class="image-slider" id="imageSlider">
+          <figure>
+            <img src="{% static 'Main/others/wendy.jpg' %}" alt="Fresh Eggs">
+            <figcaption>Fresh Eggs</figcaption>
+          </figure>
+          <figure>
+            <img src="{% static 'Main/others/mcd.png' %}" alt="Organic Products">
+            <figcaption>Organic Products</figcaption>
+          </figure>
+          <figure>
+            <img src="{% static 'Main/others/lotteria.jpg' %}" alt="Dairy Items">
+            <figcaption>Dairy Items</figcaption>
+          </figure>
+          <figure>
+            <img src="{% static 'Main/others/wendy.jpg' %}" alt="Farm Fresh">
+            <figcaption>Farm Fresh</figcaption>
+          </figure>
+          <figure>
+            <img src="{% static 'Main/others/mcd.png' %}" alt="Quality Assured">
+            <figcaption>Quality Assured</figcaption>
+          </figure>
+          <figure>
+            <img src="{% static 'Main/others/lotteria.jpg' %}" alt="Healthy Choices">
+            <figcaption>Healthy Choices</figcaption>
+          </figure>
+        </div>
+
+        <button class="slider-arrow right" onclick="scrollSlider(1)">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🌟 Features Section -->
+  <section class="content-section features-section" id="features">
+    <div class="promo-section">
+      <div class="promo-text">
+        <h2>Why Choose WENDY WOO?</h2>
+        <p>Experience the difference with our premium quality products and exceptional service.</p>
+      </div>
+      <div class="panel-container">
+        <div class="promo-panel">
+          <img src="{% static 'Main/others/wendy.jpg' %}" alt="Freshness Guaranteed">
+          <h3>Freshness Guaranteed</h3>
+          <p>Our products are delivered fresh daily to ensure maximum quality and taste.</p>
+          <a href="{% url 'shopnow' %}" class="panel-button">SHOP NOW</a>
+        </div>
+
+        <div class="promo-panel">
+          <img src="{% static 'Main/others/mcd.png' %}" alt="Quality Standards">
+          <h3>Premium Quality</h3>
+          <p>Rigorous quality checks ensure every product meets our high standards.</p>
+          <a href="{% url 'menu' %}" class="panel-button">VIEW MENU</a>
+        </div>
+
+        <div class="promo-panel">
+          <img src="{% static 'Main/others/lotteria.jpg' %}" alt="Sustainable Farming">
+          <h3>Sustainable Farming</h3>
+          <p>We practice sustainable farming methods to protect our environment.</p>
+          <a href="#sustainability" class="panel-button">LEARN MORE</a>
+        </div>
+
+        <div class="promo-panel">
+          <img src="{% static 'Main/others/wendy.jpg' %}" alt="Customer Care">
+          <h3>24/7 Support</h3>
+          <p>Our dedicated team is always here to assist you with any inquiries.</p>
+          <a href="#contact" class="panel-button">CONTACT US</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🌱 Sustainability Section -->
+  <section class="content-section sustainability-section" id="sustainability">
+    <div class="sustainability-content">
+      <h2>Leading with Sustainability</h2>
+      <p>At WENDY WOO, we are committed to sustainable practices that protect our planet 
+         while delivering the highest quality products. Our eco-friendly farming methods 
+         and responsible sourcing ensure a better future for generations to come.</p>
+      <a href="{% url 'shopnow' %}" class="sustainability-button">SHOP SUSTAINABLE</a>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Smooth scroll function
+function scrollSlider(direction) {
+  const slider = document.getElementById('imageSlider');
+  if (slider) {
+    const scrollAmount = 300;
+    slider.scrollBy({
+      left: direction * scrollAmount,
+      behavior: 'smooth'
+    });
+  }
+}
+
+// Auto scroll for slider
+function startAutoScroll() {
+  const slider = document.getElementById('imageSlider');
+  if (slider) {
+    setInterval(() => {
+      const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+      if (Math.ceil(slider.scrollLeft) >= maxScrollLeft) {
+        slider.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        slider.scrollBy({ left: 300, behavior: 'smooth' });
+      }
+    }, 4000);
+  }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  startAutoScroll();
+});
+</script>
+{% endblock %}

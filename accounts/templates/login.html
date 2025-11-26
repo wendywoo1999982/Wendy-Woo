@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2>Sign In</h2>
+    
+    <!-- Display messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Display form errors with helpful messages -->
+    {% if form.errors %}
+    <div class="error-message">
+        <strong>Login failed!</strong>
+        {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+        
+        <!-- Helpful message for inactive accounts -->
+        <div style="margin-top: 10px; font-size: 0.9em;">
+            <strong>Note:</strong> If you recently signed up, please check your email for a verification link.
+            Your account needs to be verified before you can sign in.
+        </div>
+    </div>
+    {% endif %}
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_username">Email Address:</label>
+            <input type="text" name="username" id="id_username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password">Password:</label>
+            <div class="password-wrapper">
+                <div class="password-input-container">
+                    <input type="password" name="password" id="id_password" required>
+                </div>
+                <button type="button" class="toggle-password" id="togglePassword">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+        </div>
+        
+        <button type="submit">Sign In</button>
+    </form>
+    
+    <div class="login-links">
+        <p><a href="{% url 'forgot_password' %}">Forgot password?</a></p>
+        <p>Don't have an account? <a href="{% url 'signup' %}">Create new account</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'login.js' %}"></script>
+{% endblock %}

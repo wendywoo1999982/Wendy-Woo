@@ -1,0 +1,10 @@
+{% load static %} 
+{% block title %}Log Out{% endblock %}
+
+{% block content %}
+<div class="logout-container">
+  <h2>You’ve been signed out</h2>
+  <p>Thank you for visiting. Come back soon!</p>
+  <a href="{% url 'login' %}">Sign in again</a>
+</div>
+{% endblock %}

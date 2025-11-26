@@ -1,0 +1,201 @@
+/* Signup Page Styles */
+.signup-container {
+    max-width: 450px;
+    margin: 60px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.signup-container h2 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Form Styles */
+.signup-container form {
+    text-align: left;
+}
+
+.signup-container .form-group {
+    margin-bottom: 25px;
+}
+
+.signup-container label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.signup-container input[type="email"],
+.signup-container input[type="text"],
+.signup-container input[type="password"] {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e8ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    box-sizing: border-box;
+}
+
+.signup-container input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Submit Button */
+.signup-container button[type="submit"] {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 25px 0 20px 0;
+}
+
+.signup-container button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.signup-container button[type="submit"]:active {
+    transform: translateY(-1px);
+}
+
+/* Link Styles */
+.signup-container p {
+    color: #7f8c8d;
+    margin-top: 25px;
+    font-size: 1rem;
+}
+
+.signup-container a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.signup-container a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-weight: 500;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-left-color: #28a745;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left-color: #dc3545;
+}
+
+/* Form Paragraph Styling (from form.as_p) */
+.signup-container form p {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.signup-container form p label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.signup-container form p input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e8ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    box-sizing: border-box;
+}
+
+.signup-container form p input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Error Messages */
+.signup-container .error {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.signup-container .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+    color: #e74c3c;
+    font-size: 0.85rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .signup-container {
+        margin: 30px 20px;
+        padding: 30px 25px;
+    }
+    
+    .signup-container h2 {
+        font-size: 1.8rem;
+    }
+    
+    .signup-container input[type="email"],
+    .signup-container input[type="text"],
+    .signup-container input[type="password"] {
+        padding: 14px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .signup-container {
+        margin: 20px 15px;
+        padding: 25px 20px;
+    }
+    
+    .signup-container h2 {
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+    }
+}

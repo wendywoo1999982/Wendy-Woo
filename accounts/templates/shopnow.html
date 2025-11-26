@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shop Now - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'shopnow.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="shopnow-container">
+  <h1>SHOP NOW</h1>
+
+  <!-- Category Navigation -->
+  <div class="category-nav">
+    {% for category in categories %}
+    <button class="category-btn" data-category="{{ category.id }}">
+      {{ category.name }}
+    </button>
+    {% endfor %}
+  </div>
+
+  <!-- Products Grid -->
+  <div class="products-container">
+    {% for category in categories %}
+    <div class="category-content" id="category-{{ category.id }}">
+      <h2 class="category-title">{{ category.name }}</h2>
+      <div class="products-grid">
+        {% for product in category.product_set.all %}
+        <div class="product-card">
+          <!-- Make product image and name clickable -->
+          <a href="{% url 'product_detail' product.id %}" class="product-link">
+            <div class="product-image">
+              <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            </div>
+          </a>
+          <div class="product-info">
+            <!-- Make product name clickable -->
+            <a href="{% url 'product_detail' product.id %}" class="product-link">
+              <h3 class="product-name">{{ product.name }}</h3>
+            </a>
+            <p class="product-description">{{ product.description|truncatewords:20 }}</p>
+            
+            <!-- Rating Preview (Optional) -->
+            <div class="rating-preview">
+              <span class="stars">
+                {% with avg_rating=product.average_rating %}
+                {% for i in "12345" %}
+                  {% if forloop.counter <= avg_rating %}
+                    ⭐
+                  {% else %}
+                    ☆
+                  {% endif %}
+                {% endfor %}
+                {% endwith %}
+              </span>
+              <span class="review-count">({{ product.review_count }})</span>
+            </div>
+            
+            <div class="product-price">¥{{ product.price|floatformat:"0" }}</div>
+            <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart-btn">
+              Add to Cart
+            </a>  <!-- ← FIXED: Changed </button> to </a> -->
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

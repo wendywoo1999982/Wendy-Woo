@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>My Profile</h1>
+    
+    <div class="profile-info">
+        <div class="info-card">
+            <h3>Account Information</h3>
+            <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+        </div>
+        
+        <div class="action-card">
+            <h3>Account Actions</h3>
+            <a href="#" class="profile-btn">Edit Profile</a>
+            <a href="#" class="profile-btn">Order History</a>
+            <a href="{% url 'logout' %}" class="profile-btn logout-btn">Logout</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
