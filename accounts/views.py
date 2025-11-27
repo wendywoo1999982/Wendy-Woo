@@ -1,10 +1,11 @@
-from django.contrib.auth.views import LoginView, LogoutView
+# ===== DJANGO IMPORTS =====
+from django.contrib.auth.views import LoginView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -14,7 +15,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Q
 from django.views.decorators.http import require_POST
-from django.core.mail import EmailMessage
+import json
+
+# ===== LOCAL IMPORTS =====
 from .forms import SignUpForm, ReviewForm, EnquiryForm
 from .models import Category, Product, ProductReview
 
@@ -48,26 +51,18 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('main')
     
     def form_valid(self, form):
-        print("🔍 DEBUG 1: Starting signup process")
-        
-        # Create user but don't activate yet
         user = form.save(commit=False)
         user.is_active = False
         user.save()
-        print(f"🔍 DEBUG 2: User created - {user.username}, {user.email}")
         
         # Send verification email
         try:
-            print("🔍 DEBUG 3: Starting email process")
-            
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            print(f"🔍 DEBUG 4: Token and UID generated")
             
             verification_url = self.request.build_absolute_uri(
                 reverse('verify_email', kwargs={'uidb64': uid, 'token': token})
             )
-            print(f"🔍 DEBUG 5: Verification URL created: {verification_url}")
             
             subject = 'Verify Your WENDY WOO Account'
             message = f'''
@@ -87,9 +82,7 @@ WENDY WOO Team
             '''
             
             from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'utm2577239@stu.o-hara.ac.jp')
-            print(f"🔍 DEBUG 6: From email: {from_email}, To: {user.email}")
             
-            print("🔍 DEBUG 7: About to call send_mail")
             send_mail(
                 subject,
                 message,
@@ -97,25 +90,18 @@ WENDY WOO Team
                 [user.email],
                 fail_silently=False,
             )
-            print("🔍 DEBUG 8: send_mail completed successfully!")
             
         except Exception as e:
-            print(f"🔍 DEBUG ERROR: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"Email error: {e}")
         
         messages.success(
             self.request,
             f'Welcome {user.first_name}! Please check your email to verify your account.'
         )
-        print("🔍 DEBUG 9: Success message set, redirecting to main")
         return redirect('main')
 
 
 def verify_email(request, uidb64, token):
-    """
-    Verify user's email address and activate account
-    """
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
@@ -135,18 +121,12 @@ def verify_email(request, uidb64, token):
 
 
 def custom_logout(request):
-    """
-    Custom logout view that redirects immediately to main page
-    """
     logout(request)
     return redirect('main')
 
 
-# ===== PASSWORD RESET VIEWS =====
+# ===== PASSWORD RESET =====
 def forgot_password(request):
-    """
-    Handle password reset requests
-    """
     if request.method == 'POST':
         email = request.POST.get('email')
         try:
@@ -155,7 +135,7 @@ def forgot_password(request):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             
             reset_url = request.build_absolute_uri(
-                reverse_lazy('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+                reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
             )
             
             subject = 'Password Reset Request - WENDY WOO'
@@ -194,35 +174,24 @@ WENDY WOO Team
     return render(request, 'forgot_password.html')
 
 
-def test_smtp(request):
-    try:
-        send_mail(
-            'SMTP Test - WENDY WOO',
-            'This is a test email from your Django application.',
-            settings.DEFAULT_FROM_EMAIL,
-            ['your-test-email@gmail.com'],  # Change to your email
-            fail_silently=False,
-        )
-        return JsonResponse({"status": "Email sent successfully!"})
-    except Exception as e:
-        return JsonResponse({"error": str(e)})
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
 
 
-# ===== PROFILE & ACCOUNT VIEWS =====
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'password_reset_complete.html'
+
+
+# ===== PROFILE VIEWS =====
 @login_required
 def profile(request):
-    """
-    User profile page after login - shows specific user data
-    """
     return render(request, 'profile.html', {'user': request.user})
 
 
 @login_required
 def order_history(request):
-    """
-    User's order history page
-    """
-    orders = []  # You can populate this with actual orders when you have an Order model
+    orders = []
     return render(request, 'orders.html', {
         'user': request.user,
         'orders': orders
@@ -231,74 +200,138 @@ def order_history(request):
 
 @login_required
 def settings(request):
-    """
-    User settings page (mainly for password change)
-    """
     return render(request, 'settings.html', {'user': request.user})
 
 
 # ===== CART VIEWS =====
-# @require_POST  # ← Remove or comment out this line
 def add_to_cart(request, product_id):
-    """
-    Add product to cart and update session
-    """
     product = get_object_or_404(Product, id=product_id)
-    
-    # Initialize cart in session
-    if 'cart' not in request.session:
-        request.session['cart'] = {}
-    
-    cart = request.session['cart']
-    
-    # Add product to cart
-    product_id_str = str(product_id)
-    if product_id_str in cart:
-        cart[product_id_str] += 1
-    else:
-        cart[product_id_str] = 1
-    
-    # Save to session
+    cart = request.session.get('cart', {})
+    cart[str(product_id)] = cart.get(str(product_id), 0) + 1
     request.session['cart'] = cart
     request.session.modified = True
-    
-    # Update cart summary
     update_cart_summary(request)
-    
     messages.success(request, f"Added {product.name} to cart!")
     return redirect('shopnow')
 
 
 def update_cart_summary(request):
-    """Update cart count and total"""
     cart = request.session.get('cart', {})
-    
     total_items = 0
     total_price = 0
-    
-    for product_id, quantity in cart.items():
+    for pid, qty in cart.items():
         try:
-            product = Product.objects.get(id=int(product_id))
-            total_items += quantity
-            total_price += product.price * quantity
-        except (Product.DoesNotExist, ValueError):
+            product = Product.objects.get(id=int(pid))
+            total_items += qty
+            total_price += product.price * qty
+        except Product.DoesNotExist:
             continue
-    
     request.session['cart_count'] = total_items
     request.session['cart_total'] = total_price
     request.session.modified = True
 
 
-# ===== CONTEXT PROCESSOR FOR CART DATA =====
+# ===== CART API VIEWS =====
+def get_cart_data(request):
+    try:
+        cart = request.session.get('cart', {})
+        
+        total_items = 0
+        total_price = 0
+        cart_items = []
+        
+        for product_id, quantity in cart.items():
+            try:
+                product = Product.objects.get(id=int(product_id))
+                item_total = product.price * quantity
+                total_items += quantity
+                total_price += item_total
+                
+                cart_items.append({
+                    'id': product_id,
+                    'name': product.name,
+                    'price': float(product.price),
+                    'quantity': quantity,
+                    'total_price': float(item_total)
+                })
+            except (Product.DoesNotExist, ValueError):
+                continue
+        
+        return JsonResponse({
+            'success': True,
+            'total_items': total_items,
+            'total_price': float(total_price),
+            'items': cart_items
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@require_POST
+def update_cart_item(request):
+    try:
+        data = json.loads(request.body)
+        item_id = str(data.get('item_id'))
+        quantity = int(data.get('quantity', 1))
+        
+        cart = request.session.get('cart', {})
+        
+        if item_id in cart:
+            if quantity > 0:
+                cart[item_id] = quantity
+            else:
+                del cart[item_id]
+        else:
+            cart[item_id] = quantity
+        
+        request.session['cart'] = cart
+        request.session.modified = True
+        
+        update_cart_summary(request)
+        
+        return JsonResponse({
+            'success': True,
+            'total_items': request.session.get('cart_count', 0),
+            'total_price': float(request.session.get('cart_total', 0))
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@require_POST
+def remove_cart_item(request):
+    try:
+        data = json.loads(request.body)
+        item_id = str(data.get('item_id'))
+        
+        cart = request.session.get('cart', {})
+        
+        if item_id in cart:
+            del cart[item_id]
+            request.session['cart'] = cart
+            request.session.modified = True
+            
+            update_cart_summary(request)
+            
+            return JsonResponse({
+                'success': True,
+                'total_items': request.session.get('cart_count', 0),
+                'total_price': float(request.session.get('cart_total', 0))
+            })
+        else:
+            return JsonResponse({'success': False, 'error': 'Item not found in cart'})
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+# ===== CONTEXT PROCESSOR =====
 def cart_context(request):
-    """
-    Make cart data available in all templates
-    """
     cart_count = request.session.get('cart_count', 0)
     cart_total = request.session.get('cart_total', 0)
     cart = request.session.get('cart', {})
     
-    # Get actual product details for the cart popup
     cart_items = []
     
     for product_id, quantity in cart.items():
@@ -319,11 +352,183 @@ def cart_context(request):
     }
 
 
-# ===== ENQUIRIES VIEWS =====
+# ===== CHECKOUT VIEWS =====
+# ===== CHECKOUT VIEWS =====
+def checkout(request):
+    """Main checkout page - redirects to appropriate step"""
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        return redirect('/accounts/login/?next=/checkout/')
+    
+    # Check if cart is empty
+    cart = request.session.get('cart', {})
+    if not cart:
+        messages.warning(request, 'Your cart is empty!')
+        return redirect('cart_page')
+    
+    # Redirect to payment page (since we only have COD)
+    return redirect('payment_page')
+
+
+def check_auth(request):
+    """Check if user is authenticated"""
+    return JsonResponse({
+        'authenticated': request.user.is_authenticated,
+        'username': request.user.username if request.user.is_authenticated else None
+    })
+
+
+@login_required
+def payment_page(request):
+    """Payment confirmation page for authenticated users"""
+    cart = request.session.get('cart', {})
+    
+    total_items = 0
+    total_price = 0
+    cart_items = []
+    
+    for product_id, quantity in cart.items():
+        try:
+            product = Product.objects.get(id=int(product_id))
+            item_total = product.price * quantity
+            total_items += quantity
+            total_price += item_total
+            
+            cart_items.append({
+                'product': product,
+                'quantity': quantity,
+                'total_price': item_total
+            })
+        except Product.DoesNotExist:
+            continue
+    
+    context = {
+        'cart_items': cart_items,
+        'total_items': total_items,
+        'total_price': total_price,
+    }
+    
+    return render(request, 'checkout/payment.html', context)
+
+
+def cart_page(request):
+    cart = request.session.get('cart', {})
+    cart_items = []
+    total_items = 0
+    total_price = 0
+
+    for product_id, quantity in cart.items():
+        try:
+            product = Product.objects.get(id=int(product_id))
+            item_total = product.price * quantity
+            cart_items.append({
+                'product': product,
+                'quantity': quantity,
+                'item_total': item_total,
+            })
+            total_items += quantity
+            total_price += item_total
+        except Product.DoesNotExist:
+            continue
+
+    return render(request, 'cart_page.html', {
+        'cart_items': cart_items,
+        'cart_items_count': total_items,
+        'cart_total': total_price,
+    })
+
+# ===== PAGE VIEWS =====
+def main_page(request):
+    return render(request, 'main.html')
+
+
+def menu_page(request):
+    return render(request, 'menu.html')
+
+
+def shopnow(request):
+    categories = Category.objects.all()
+    products = Product.objects.filter(is_available=True)
+    return render(request, 'shopnow.html', {
+        'categories': categories,
+        'products': products
+    })
+
+
+def location(request):
+    return render(request, 'location.html')
+
+
+# ===== PRODUCT VIEWS =====
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    reviews = product.reviews.all()
+    
+    context = {
+        'product': product,
+        'reviews': reviews,
+        'review_form': ReviewForm(),
+    }
+    return render(request, 'product_detail.html', context)
+
+
+@login_required
+def add_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    existing_review = ProductReview.objects.filter(product=product, user=request.user).first()
+    if existing_review:
+        messages.warning(request, 'You have already reviewed this product.')
+        return redirect('product_detail', product_id=product.id)
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            
+            messages.success(request, 'Thank you for your review!')
+            return redirect('product_detail', product_id=product.id)
+    
+    return redirect('product_detail', product_id=product.id)
+
+
+# ===== SEARCH VIEWS =====
+def search_results(request):
+    query = request.GET.get('q', '')
+    return render(request, 'search_results.html', {
+        'query': query,
+        'products': []
+    })
+
+
+def search_ajax(request):
+    query = request.GET.get('q', '')
+    results = []
+    
+    if query:
+        products = Product.objects.filter(
+            Q(name__icontains=query) | 
+            Q(description__icontains=query)
+        )[:5]
+        
+        results = [
+            {
+                'id': product.id,
+                'name': product.name,
+                'price': f"¥{product.price}",
+                'url': product.get_absolute_url()
+            }
+            for product in products
+        ]
+    
+    return JsonResponse({'results': results})
+
+
+# ===== ENQUIRIES =====
 def enquiries(request):
-    """
-    Handle customer enquiries and send emails with photo attachment
-    """
     INQUIRY_TYPES = [
         ('', 'Please select one'),
         ('orders', 'Orders'),
@@ -331,24 +536,15 @@ def enquiries(request):
         ('others', 'Others'),
     ]
     
-    print("🟢 DEBUG: Enquiries view called")
-    
     if request.method == 'POST':
-        print("🟢 DEBUG: POST request received")
         form = EnquiryForm(request.POST, request.FILES)
         
         if form.is_valid():
-            print("🟢 DEBUG: Form is valid")
-            # Get form data
             inquiry_type = form.cleaned_data['inquiry_type']
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             message = form.cleaned_data['message']
             photo = form.cleaned_data.get('photo')
-            
-            print(f"🟢 DEBUG: Photo received: {bool(photo)}")
-            if photo:
-                print(f"🟢 DEBUG: Photo details - Name: {photo.name}, Size: {photo.size} bytes")
             
             from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'utm2577239@stu.o-hara.ac.jp')
             inquiry_type_display = dict(INQUIRY_TYPES).get(inquiry_type, inquiry_type)
@@ -372,10 +568,9 @@ WENDY WOO Team""",
                     recipient_list=[email],
                     fail_silently=False,
                 )
-                print("✅ DEBUG: User email sent")
                 
                 # Send email to admin with photo attachment
-                admin_subject = f"📷 ENQUIRY WITH PHOTO - {inquiry_type_display}" if photo else f"Enquiry - {inquiry_type_display}"
+                admin_subject = f"ENQUIRY WITH PHOTO - {inquiry_type_display}" if photo else f"Enquiry - {inquiry_type_display}"
                 
                 admin_email = EmailMessage(
                     subject=admin_subject,
@@ -385,7 +580,7 @@ NEW ENQUIRY RECEIVED
 Inquiry Type: {inquiry_type_display}
 Name: {name}
 Email: {email}
-Photo Attached: {'YES 📸' if photo else 'No'}
+Photo Attached: {'YES' if photo else 'No'}
 
 Message:
 {message}
@@ -402,158 +597,44 @@ Sent from WENDY WOO Contact Form
                     try:
                         photo_content = photo.read()
                         admin_email.attach(photo.name, photo_content, photo.content_type)
-                        print("✅ DEBUG: Photo attached to admin email")
                     except Exception as e:
-                        print(f"🔴 DEBUG: Photo attachment error: {e}")
+                        print(f"Photo attachment error: {e}")
                 
                 admin_email.send(fail_silently=False)
-                print("✅ DEBUG: Admin email sent with photo attachment")
                 
-                # REDIRECT TO SUCCESS PAGE
                 return redirect('enquiry_success')
                 
             except Exception as e:
-                print(f"🔴 DEBUG: Email error: {e}")
-                messages.error(request, '❌ There was an error sending your enquiry. Please try again.')
+                messages.error(request, 'There was an error sending your enquiry. Please try again.')
         else:
-            print(f"🔴 DEBUG: Form errors: {form.errors}")
-            messages.error(request, '❌ Please correct the errors below.')
+            messages.error(request, 'Please correct the errors below.')
     
     else:
         form = EnquiryForm()
     
     return render(request, 'enquiries.html', {'form': form})
 
+
 def enquiry_success(request):
-    """
-    Show success page after enquiry submission
-    """
     return render(request, 'enquiry_success.html')
 
-# ===== PAGE VIEWS =====
-def main_page(request):
-    """
-    Main informative homepage
-    """
-    return render(request, 'main.html')
 
-
-def menu_page(request):
-    """
-    Menu page
-    """
-    return render(request, 'menu.html')
-
-
-def shopnow(request):
-    """
-    Shop now page with products
-    """
-    categories = Category.objects.all()
-    products = Product.objects.filter(is_available=True)
-    return render(request, 'shopnow.html', {
-        'categories': categories,
-        'products': products
-    })
-
-
-# ===== PRODUCT REVIEW VIEWS =====
-def product_detail(request, product_id):
-    """
-    Product detail page with reviews
-    """
-    product = get_object_or_404(Product, id=product_id)
-    reviews = product.reviews.all()
-    
-    context = {
-        'product': product,
-        'reviews': reviews,
-        'review_form': ReviewForm(),
-    }
-    return render(request, 'product_detail.html', context)
-
-
-@login_required
-def add_review(request, product_id):
-    """
-    Add a review for a product
-    """
-    product = get_object_or_404(Product, id=product_id)
-    
-    # Check if user already reviewed this product
-    existing_review = ProductReview.objects.filter(product=product, user=request.user).first()
-    if existing_review:
-        messages.warning(request, 'You have already reviewed this product.')
-        return redirect('product_detail', product_id=product.id)
-    
-    if request.method == 'POST':
-        form = ReviewForm(request.POST, request.FILES)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.product = product
-            review.user = request.user
-            review.save()
-            
-            messages.success(request, 'Thank you for your review!')
-            return redirect('product_detail', product_id=product.id)
-        else:
-            messages.error(request, 'Please check your review details.')
-    
-    return redirect('product_detail', product_id=product.id)
-
-
-# ===== SEARCH VIEWS =====
-def search_results(request):
-    query = request.GET.get('q', '')
-    return render(request, 'search_results.html', {
-        'query': query,
-        'products': []
-    })
-
-
-def search_ajax(request):
-    query = request.GET.get('q', '')
-    results = []
-    
-    if query:
-        products = Product.objects.filter(
-            Q(name__icontains=query) | 
-            Q(description__icontains=query)
-        )[:5]  # Limit to 5 results for dropdown
-        
-        results = [
-            {
-                'id': product.id,
-                'name': product.name,
-                'price': f"¥{product.price}",
-                'url': product.get_absolute_url()
-            }
-            for product in products
-        ]
-    
-    return JsonResponse({'results': results})
-
-# Add this temporary debug view to your views.py
+# ===== DEBUG/UTILITY =====
 def debug_cart(request):
-    """
-    Debug view to check cart session data
-    """
     cart = request.session.get('cart', {})
     cart_count = request.session.get('cart_count', 0)
     cart_total = request.session.get('cart_total', 0)
     
-    print("🛒 DEBUG CART SESSION:")
+    print("DEBUG CART SESSION:")
     print(f"Cart items: {cart}")
     print(f"Cart count: {cart_count}")
     print(f"Cart total: {cart_total}")
     
-    # Check if products exist
-    from .models import Product
     for product_id in cart.keys():
         try:
             product = Product.objects.get(id=int(product_id))
-            print(f"✅ Product {product_id}: {product.name} - exists")
+            print(f"Product {product_id}: {product.name} - exists")
         except Product.DoesNotExist:
-            print(f"❌ Product {product_id}: DOES NOT EXIST")
+            print(f"Product {product_id}: DOES NOT EXIST")
     
     return redirect('shopnow')

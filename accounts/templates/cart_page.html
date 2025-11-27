@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'cart_page.css' %}">
+
+<div class="cart-page-container">
+    <h2>Your Shopping Cart</h2>
+
+    {% if cart_items_count == 0 %}
+        <div class="empty-cart">
+            <p>No items in cart</p>
+            <a href="{% url 'shopnow' %}" class="continue-shopping-btn">← Continue Shopping</a>
+        </div>
+    {% else %}
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item" data-item-id="{{ item.product.id }}" data-price="{{ item.product.price }}">
+                <a href="{% url 'product_detail' item.product.id %}" class="product-image-link">
+                    <div class="product-image">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-thumbnail" onerror="this.style.display='none'">
+                        {% else %}
+                            <div class="image-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+
+                <a href="{% url 'product_detail' item.product.id %}" class="item-info-link">
+                    <div class="item-info">
+                        <h4>{{ item.product.name }}</h4>
+                        <p class="item-price">¥{{ item.product.price }}</p>
+                        <p class="item-total">¥{{ item.item_total }}</p>
+                    </div>
+                </a>
+
+                <div class="controls-column">
+                    <div class="quantity-controls">
+                        <button class="quantity-btn minus" data-item-id="{{ item.product.id }}">-</button>
+                        <span class="quantity">{{ item.quantity }}</span>
+                        <button class="quantity-btn plus" data-item-id="{{ item.product.id }}">+</button>
+                    </div>
+                    <button class="remove-btn" data-item-id="{{ item.product.id }}" title="Remove from cart">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span class="items-count">{{ cart_items_count }} item{% if cart_items_count != 1 %}s{% endif %}</span>
+                <span class="items-subtotal">¥{{ cart_total|default:0 }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span>Free</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total (tax incl.)</span>
+                <span class="total-price">¥{{ cart_total|default:0 }}</span>
+            </div>
+        </div>
+
+        <div class="cart-buttons">
+            <a href="{% url 'shopnow' %}" class="continue-shopping-btn">← Continue Shopping</a>
+            <button class="checkout-btn">CHECKOUT</button>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

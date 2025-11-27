@@ -1,11 +1,11 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views  # Import all views
+from . import views
 
 urlpatterns = [
     path('', views.main_page, name='main'),
     path('menu/', views.menu_page, name='menu'),
-    path('shopnow/', views.shopnow, name='shopnow'),  # Temporarily disabled
+    path('shopnow/', views.shopnow, name='shopnow'), 
     path('login/', views.SignInView.as_view(), name='login'),
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('logout/', views.custom_logout, name='logout'),
@@ -13,12 +13,26 @@ urlpatterns = [
     path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
     path('profile/', views.profile, name='profile'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('location/', views.location, name='location'),
+    path('checkout/', views.checkout, name='checkout'),
+
+    # Checkout URLs
+    path('checkout/', views.checkout, name='checkout'),
+    path('api/auth/check/', views.check_auth, name='check_auth'),
+    path('checkout/payment/', views.payment_page, name='payment_page'),
+
     # path('orders/', views.order_history, name='order_history'),  # COMMENT THIS OUT FOR NOW
     # path('settings/', views.settings, name='settings'),  # COMMENT THIS OUT FOR NOW
+    path('api/cart/update/', views.update_cart_item, name='update_cart_item'),
+    path('api/cart/remove/', views.remove_cart_item, name='remove_cart_item'),
+    path('api/cart/data/', views.get_cart_data, name='cart_data_api'),
+
+
+    path('cart/', views.cart_page, name='cart_page'),
     
     # PRODUCT URLs - REMOVED DUPLICATE
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
-    path('product/<int:product_id>/add-review/', views.add_review, name='add_review'),
+path('product/<int:product_id>/add-review/', views.add_review, name='add_review'),
     
     # ENQUIRY URLs
     path('enquiries/', views.enquiries, name='enquiries'),
@@ -56,7 +70,6 @@ path('password-reset-complete/',
      ), 
      name='password_reset_complete'),
     
-    path('test-smtp/', views.test_smtp, name='test_smtp'),
 
 path('debug-cart/', views.debug_cart, name='debug_cart'),
 

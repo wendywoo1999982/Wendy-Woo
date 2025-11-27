@@ -8,6 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   {% block extra_css %}{% endblock %} 
+  <style>
+    /* TEMPORARY FIX - FORCE CART TO SHOW */
+    #cart-popup.active {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+</style>
 </head>
 <body>
   <!-- HEADER SECTION -->
@@ -17,13 +25,31 @@
         <a href="javascript:void(0);" class="home" id="hamburgerToggle">&#9776;</a>
         <div class="dropdown-menu" id="dropdownMenu">
           <span class="close-btn" id="dropdownClose">✖</span>
-          <a href="{% url 'menu' %}">Menu</a>
-          <a href="#location">Location</a>
+          <a href="{% url 'location' %}">Location</a>
           <a href="{% url 'enquiries' %}">Enquiry</a>
         </div>
       </div>
-      <a href="{% url 'shopnow' %}" class="shownow">SHOP NOW</a>
+      
+    <!-- Language Toggle - Black & White -->
+<div class="language-toggle">
+    <div class="language-current">
+        <span class="language-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M2 12h20"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+        </span>
+        <span class="current-lang">EN</span>
+        <span class="dropdown-arrow">▼</span>
     </div>
+    <div class="language-options">
+        <div class="language-option" data-lang="en">EN</div>
+        <div class="language-option" data-lang="ja">JP</div>
+    </div>
+</div>
+<a href="{% url 'shopnow' %}" class="shownow">SHOP NOW</a>
+</div>
 
     <div class="hero-logo-group">
       <a href="{% url 'main' %}" class="logo-link">
@@ -81,52 +107,90 @@
     </div>
   </div>
 
-  <!-- CART POPUP -->
-  <div id="cart-popup">
+<!-- CART POPUP -->
+<div id="cart-popup">
     <div class="cart-header">
-      <h3>Shopping Cart ({{ cart_items_count|default:0 }})</h3>
-      <span class="close-cart">&times;</span>
+        <h3>Shopping Cart (<span class="cart-count-header">{{ cart_items_count|default:0 }}</span>)</h3>
+        <span class="close-cart">&times;</span>
     </div>
     
     <div class="cart-content">
-      {% if cart_items %}
-        <div class="cart-items">
-          {% for item in cart_items %}
-          <div class="cart-item">
-            <div class="item-info">
-              <h4>{{ item.product.name }}</h4>
-              <p class="item-quantity">{{ item.quantity }} x ¥{{ item.product.price }}</p>
+        <!-- EMPTY CART MESSAGE -->
+        <div class="empty-cart" style="display: {% if cart_items_count == 0 %}block{% else %}none{% endif %};">
+            <p>No items in cart</p>
+            <a href="{% url 'shopnow' %}" class="continue-shopping-btn">Continue Shopping</a>
+        </div>
+        
+        <!-- CART ITEMS (only show when items exist) -->
+        <div class="cart-items" style="display: {% if cart_items_count > 0 %}block{% else %}none{% endif %};">
+            {% for item in cart_items %}
+            <div class="cart-item" data-item-id="{{ item.product.id }}" data-price="{{ item.product.price }}">
+                <!-- PRODUCT IMAGE (Clickable) -->
+                <a href="{% url 'product_detail' item.product.id %}" class="product-image-link">
+                    <div class="product-image">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-thumbnail" onerror="this.style.display='none'">
+                        {% else %}
+                            <div class="image-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+                
+                <!-- PRODUCT INFO (Clickable) -->
+                <a href="{% url 'product_detail' item.product.id %}" class="item-info-link">
+                    <div class="item-info">
+                        <h4>{{ item.product.name }}</h4>
+                        <p class="item-price">¥{{ item.product.price }}</p>
+                        <!-- Item total for this product -->
+                        <p class="item-total">{{ item.item_total }}</p>
+                    </div>
+                </a>
+                
+                <!-- CONTROLS COLUMN - Quantity & Bin together -->
+                <div class="controls-column">
+                    <!-- QUANTITY CONTROLS -->
+                    <div class="quantity-controls">
+                        <button class="quantity-btn minus" data-item-id="{{ item.product.id }}">-</button>
+                        <span class="quantity">{{ item.quantity }}</span>
+                        <button class="quantity-btn plus" data-item-id="{{ item.product.id }}">+</button>
+                    </div>
+                    
+                    <!-- BIN ICON -->
+                    <button class="remove-btn" data-item-id="{{ item.product.id }}" title="Remove from cart">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </div>
-          </div>
-          {% endfor %}
+            {% endfor %}
         </div>
         
-        <div class="cart-summary">
-          <div class="summary-row">
-            <span>{{ cart_items_count }} item{% if cart_items_count != 1 %}s{% endif %}</span>
-            <span>¥{{ cart_total|default:0 }}</span>
-          </div>
-          <div class="summary-row">
-            <span>Shipping</span>
-            <span>Free</span>
-          </div>
-          <div class="summary-row total">
-            <span>Total (tax incl.)</span>
-            <span>¥{{ cart_total|default:0 }}</span>
-          </div>
+        <!-- CART SUMMARY (only show when items exist) -->
+        <div class="cart-summary" style="display: {% if cart_items_count > 0 %}block{% else %}none{% endif %};">
+            <div class="summary-row">
+                <span class="items-count">{{ cart_items_count }} item{% if cart_items_count != 1 %}s{% endif %}</span>
+                <span class="items-subtotal">¥{{ cart_total|default:0 }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span>Free</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total (tax incl.)</span>
+                <span class="total-price">¥{{ cart_total|default:0 }}</span>
+            </div>
         </div>
         
-        <div class="cart-buttons">
-          <button class="view-cart">VIEW CART</button>
-          <button class="checkout-btn">CHECKOUT</button>
+        <!-- CART BUTTONS (only show when items exist) -->
+        <div class="cart-buttons" style="display: {% if cart_items_count > 0 %}block{% else %}none{% endif %};">
+            <a href="{% url 'cart_page' %}" class="view-cart">VIEW CART</a>
+            <button class="checkout-btn" onclick="proceedToCheckout()">
+    PROCEED TO CHECKOUT
+</button>
         </div>
-      {% else %}
-        <div class="empty-cart">
-          <p>No items in cart</p>
-        </div>
-      {% endif %}
     </div>
-  </div>
+</div>
 
   <!-- MAIN CONTENT BLOCK -->
   <main>

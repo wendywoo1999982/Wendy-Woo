@@ -1,0 +1,109 @@
+<!-- templates/checkout/payment.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmation - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <!-- Checkout Steps -->
+    <div class="checkout-steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <span>Cart</span>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <span>Details</span>
+        </div>
+        <div class="step active">
+            <div class="step-number">3</div>
+            <span>Confirmation</span>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <span>Complete</span>
+        </div>
+    </div>
+
+    <div class="checkout-content">
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h2 class="section-title">Order Summary</h2>
+            
+            <div class="order-items">
+                {% for item in cart_items %}
+                <div class="order-item">
+                    <div class="item-image">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            <span>📦</span>
+                        {% endif %}
+                    </div>
+                    <div class="item-details">
+                        <div class="item-name">{{ item.product.name }}</div>
+                        <div class="item-meta">Quantity: {{ item.quantity }}</div>
+                    </div>
+                    <div class="item-price">¥{{ item.total_price }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-totals">
+                <div class="total-row">
+                    <span>Items ({{ total_items }}):</span>
+                    <span>¥{{ total_price }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Shipping:</span>
+                    <span>Free</span>
+                </div>
+                <div class="total-row">
+                    <span>Tax:</span>
+                    <span>Included</span>
+                </div>
+                <div class="total-row final">
+                    <span>Total Amount:</span>
+                    <span>¥{{ total_price }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- COD Payment Section -->
+        <div class="payment-section">
+            <h2 class="section-title">Payment Method</h2>
+            
+            <div class="cod-info">
+                <div class="cod-icon">💰</div>
+                <div class="cod-title">Cash on Delivery (COD)</div>
+                <div class="cod-description">
+                    Pay with cash when your order is delivered to your doorstep.
+                </div>
+                <ul class="cod-features">
+                    <li>No advance payment required</li>
+                    <li>Pay when you receive your order</li>
+                    <li>Secure and convenient</li>
+                    <li>Full refund available if not satisfied</li>
+                </ul>
+            </div>
+
+            <button class="place-order-btn" id="placeOrderBtn">
+                PLACE ORDER - ¥{{ total_price }}
+            </button>
+            
+            <div class="secure-notice">
+                🔒 Your order is secure and protected
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}

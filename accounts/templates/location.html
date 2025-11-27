@@ -1,4 +1,46 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Contact Us - WENDY WOO{% endblock %}
+{% block title %}Location - WENDY WOO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'location.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="location-container">
+    <!-- Left: Operation Hours -->
+    <div class="hours-section">
+        <h2>Operation Hours</h2>
+        <ul class="hours-list">
+            <li>
+                <strong>Weekdays:</strong><br>
+                9:00 AM - 8:00 PM
+            </li>
+            <li>
+                <strong>Weekend:</strong><br>
+                10:00 AM - 10:00 PM
+            </li>
+        </ul>
+        
+        <div class="contact-info">
+            <strong>Contact Us:</strong><br>
+            Tel: 000-0000-0000
+        </div>
+    </div>
+
+    <!-- Right: Location Map -->
+    <div class="map-section">
+        <h2>Our Location</h2>
+        <div class="map-placeholder">
+            📍 Google Map<br>
+            <small>(Map integration can be added later)</small>
+        </div>
+        <div class="address">
+            <strong>Address:</strong><br>
+            〒321-0953 栃木県宇都宮市東宿郷2-5-4<br>
+            Tochigi Prefecture, Utsunomiya City, Higashishukugo 2-5-4
+        </div>
+    </div>
+</div>
+{% endblock %}
