@@ -1,0 +1,226 @@
+/* ===== MAIN SHOP CONTAINER ===== */
+.shopnow-container {
+  padding-top: 100px; /* Add space for fixed header */
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 40px;
+  max-width: 1200px; /* Maximum width for large screens */
+  margin: 0 auto; /* Center the container */
+}
+
+/* ===== MAIN PAGE TITLE ===== */
+.shopnow-container h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2.5em; /* Large heading size */
+}
+
+/*
+.menu-cover {
+  position: relative;
+  height: 10vh;  ← Change this to adjust cover height (e.g. 100vh for full screen) 
+  width: 100%;
+  overflow: hidden;
+}
+
+.menu-cover-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.menu-cover-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: rgb(227, 222, 222);
+  text-align: center;
+  padding: 0 20px;
+  background: rgba(0, 0, 0, 0.3); 
+}
+
+.menu-cover-content h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+*/
+
+/* ===== CATEGORY NAVIGATION BAR ===== */
+.category-nav {
+  display: flex;
+  justify-content: center; /* Center the category buttons */
+  gap: 15px; /* Space between buttons */
+  margin-bottom: 40px;
+  flex-wrap: wrap; /* Allow buttons to wrap on mobile */
+}
+
+/* ===== INDIVIDUAL CATEGORY BUTTONS ===== */
+.category-btn {
+  padding: 12px 24px;
+  border: 2px solid #333;
+  background: white;
+  cursor: pointer;
+  border-radius: 25px; /* Rounded pill shape */
+  transition: all 0.3s ease; /* Smooth hover effects */
+}
+
+/* ===== ACTIVE CATEGORY BUTTON STYLE ===== */
+.category-btn.active {
+  background: #333; /* Dark background */
+  color: white; /* White text */
+}
+
+/* ===== PRODUCTS GRID LAYOUT ===== */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
+  gap: 30px; /* Space between product cards */
+  margin-bottom: 40px;
+}
+
+/* ===== INDIVIDUAL PRODUCT CARD ===== */
+.product-card {
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 10px; /* Rounded corners */
+  overflow: hidden; /* Contain image and content */
+  background: white; /* White background */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Subtle shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added for hover effect */
+}
+
+.product-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
+}
+
+/* ===== CLICKABLE PRODUCT LINKS ===== */
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  cursor: pointer;
+}
+
+.product-link:hover .product-name {
+  color: #ff6b6b; /* Highlight product name on hover */
+}
+
+/* ===== PRODUCT IMAGE CONTAINER ===== */
+.product-image {
+  height: 300px; /* Fixed height for images */
+  overflow: hidden; /* Hide image overflow */
+  cursor: pointer; /* Show clickable cursor */
+  transition: transform 0.3s ease; /* Smooth image hover */
+}
+
+.product-link:hover .product-image {
+  transform: scale(1.02); /* Slight zoom on hover */
+}
+
+.product-image img {
+  width: 100%; /* Full container width */
+  height: 100%; /* Full container height */
+  object-fit: cover; /* Crop and cover the space */
+  transition: transform 0.3s ease; /* Smooth image transition */
+}
+
+/* ===== PRODUCT INFORMATION AREA ===== */
+.product-info {
+  padding: 20px; /* Inner spacing */
+}
+
+/* ===== PRODUCT BRAND TEXT ===== */
+.product-brand {
+  font-weight: bold;
+  color: #666; /* Gray color */
+  font-size: 0.9em; /* Smaller text */
+  margin-bottom: 5px;
+}
+
+/* ===== PRODUCT NAME/TITLE ===== */
+.product-name {
+  font-size: 1.3em; /* Medium text size */
+  margin-bottom: 10px;
+  color: #333; /* Dark gray */
+  cursor: pointer; /* Show clickable cursor */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+/* ===== PRODUCT DESCRIPTION ===== */
+.product-description {
+  color: #777; /* Medium gray */
+  margin-bottom: 15px;
+  line-height: 1.4; /* Better readability */
+}
+
+/* ===== RATING PREVIEW ===== */
+.rating-preview {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 8px 0;
+  font-size: 0.9em;
+}
+
+.rating-preview .stars {
+  color: #ffd700; /* Gold color for stars */
+}
+
+.rating-preview .review-count {
+  color: #666;
+  font-size: 0.8em;
+}
+
+/* ===== PRODUCT PRICE ===== */
+.product-price {
+  font-size: 1.4em; /* Larger text */
+  font-weight: bold;
+  color: #e74c3c; /* Red color for attention */
+  margin-bottom: 15px;
+}
+
+.add-to-cart-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #000;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.3s ease;
+    margin-top: 7px;
+    align-items: center; /* Center everything horizontally */
+}
+
+.add-to-cart-btn:hover {
+    background: #333;
+}
+
+/* ===== CATEGORY CONTENT SECTIONS ===== */
+.category-content {
+  display: none; /* Hidden by default */
+}
+
+/* ===== ACTIVE CATEGORY CONTENT ===== */
+.category-content.active {
+  display: block; /* Show when category is selected */
+}
+
+/* ===== CATEGORY SECTION TITLES ===== */
+.category-content h2 {
+  margin-bottom: 20px;
+  font-size: 2em; /* Large section title */
+  text-align: center;
+}

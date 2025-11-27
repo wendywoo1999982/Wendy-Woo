@@ -1,0 +1,158 @@
+/* Container Styles */
+
+
+.enquiry-container {
+    max-width: 600px;
+    margin: 6% auto;
+    padding: 40px;
+    background: rgba(249, 249, 249, 0.95);
+    border-radius: 50px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Title Styles */
+.enquiry-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 2em;
+    font-weight: 600;
+}
+
+/* Form Structure */
+.enquiry-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1em;
+}
+
+/* Input Field Styles */
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Dropdown Specific Styles */
+.form-control:invalid {
+    color: #999; /* Lighter font color for placeholder */
+}
+
+.form-control option:first-child {
+    color: #999; /* Lighter color for "Please select one" */
+}
+
+.form-control option {
+    color: #333; /* Normal color for other options */
+}
+
+/* Custom Dropdown Arrow */
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23333' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    padding-right: 35px;
+}
+
+/* Textarea Specific Styles */
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Button Styles */
+.submit-btn {
+    background: #000;
+    color: white;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Error Message Styles */
+.errorlist {
+    color: #dc3545;
+    margin: 5px 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9em;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .enquiry-container {
+        margin: 20px;
+        padding: 30px 20px;
+        border-radius: 30px; /* Slightly less round on mobile */
+    }
+    
+    .enquiry-title {
+        font-size: 1.5em;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .enquiry-container {
+        margin: 15px;
+        padding: 25px 15px;
+        border-radius: 20px;
+    }
+    
+    .enquiry-title {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .submit-btn {
+        padding: 12px 25px;
+        font-size: 15px;
+    }
+}

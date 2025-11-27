@@ -1,0 +1,77 @@
+/* Success Page Styles */
+.success-container {
+    max-width: 500px;
+    margin: 10% auto;
+    text-align: center;
+    padding: 50px 30px;
+    background: white;
+    border-radius: 50px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+    font-size: 4em;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+
+.success-title {
+    color: #28a745;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+.success-message {
+    color: #666;
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.success-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.home-btn, .back-btn {
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.home-btn {
+    background: #000;
+    color: white;
+}
+
+.home-btn:hover {
+    background: #333;
+}
+
+.back-btn {
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.back-btn:hover {
+    background: #e9ecef;
+}
+
+@media (max-width: 768px) {
+    .success-container {
+        margin: 40px 20px;
+        padding: 30px 20px;
+    }
+    
+    .success-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
