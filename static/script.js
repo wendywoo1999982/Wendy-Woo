@@ -163,8 +163,7 @@ function displaySearchResults(results, searchResultsElement) {
 
 // =========================
 // 4. CART FUNCTIONALITY (FOR POPUP ONLY) - FIXED VERSION
-// =========================
-let searchTerm = '';
+searchTerm = '';
 function initCartFunctionality() {
     // Only initialize if cart popup exists (shop now page)
     const cartPopup = document.getElementById("cart-popup");
