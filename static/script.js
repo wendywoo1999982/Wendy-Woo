@@ -1,15 +1,14 @@
 // =========================
-// INITIALIZATION CONTROLLER
+// 1. INITIALIZE VARIABLES
 // =========================
-let isInitialized = false;
+let searchTerm = ''; // Add this line to fix the error
+let currentPage = 1;
+const productsPerPage = 12;
 
-function initializeAll() {
-    if (isInitialized) {
-        console.log('⚠️ Already initialized, skipping...');
-        return;
-    }
-    
-    console.log('🚀 Starting full initialization');
+// Your existing code continues below...
+console.log('🚀 Starting full initialization');
+
+
     
     // Initialize all modules
     initHeaderEffects();
@@ -22,8 +21,7 @@ function initializeAll() {
     initPasswordToggle();
     
     isInitialized = true;
-    console.log('✅ All modules initialized');
-}
+    console.log('✅ All modules initialized');   
 
 // Single initialization point
 document.addEventListener('DOMContentLoaded', initializeAll);

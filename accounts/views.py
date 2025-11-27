@@ -16,6 +16,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.views.decorators.http import require_POST
 import json
+from .models import Category, Product
 
 # ===== LOCAL IMPORTS =====
 from .forms import SignUpForm, ReviewForm, EnquiryForm
@@ -447,11 +448,9 @@ def menu_page(request):
 
 
 def shopnow(request):
-    categories = Category.objects.all()
-    products = Product.objects.filter(is_available=True)
+    categories = Category.objects.prefetch_related('product_set').all()
     return render(request, 'shopnow.html', {
-        'categories': categories,
-        'products': products
+        'categories': categories
     })
 
 

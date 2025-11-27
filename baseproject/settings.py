@@ -20,13 +20,13 @@ STATICFILES_DIRS = [
 SECRET_KEY = 'django-insecure-sd_zovtn7s&la=rcfcv1f-+jdzpi+$3yco+68tlr-mwwvftwpq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False  # ← CHANGE TO FALSE
 
+# Add your exact Render URL to allowed hosts
 ALLOWED_HOSTS = [
-    'wendy-woo.onrender.com',
+    'wendy-woo.onrender.com',  # Your exact Render domain
     'localhost',
     '127.0.0.1',
-    '.onrender.com'
 ]
 
 # === CSRF AND CORS SETTINGS ===
